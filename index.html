@@ -244,7 +244,7 @@ function filaReserva(r, acciones=true){
   const s = db.servicios.find(x=>x.id===r.servicioId), p = usuario(r.provId), m = db.mascotas.find(x=>x.id===r.mascotaId);
   const cancelable = acciones && ['pendiente','confirmada'].includes(r.estado);
   return `<div class="item"><div><strong>${esc(s?.nombre)} para ${esc(m?.nombre)}</strong><br>
-    <span class="muted">${esc(p?.negocio)} · ${fechaLarga(r.fecha)}, ${r.hora}${r.motivo?' · Motivo: '+esc(r.motivo):''}</span>
+    <span class="muted">${esc(p?.negocio)} · ${fechaLarga(r.fecha)}, ${r.hora}${r.motivo?' · Motivo: '+esc(r.motivo):''}${r.nota?' · Indicaciones: '+esc(r.nota):''}</span>
     ${r.estado==='pendiente'?'<div class="help">El proveedor debe aceptar tu solicitud; su respuesta aparecerá aquí.</div>':''}</div>
     <div style="display:flex;gap:8px;align-items:center"><span class="badge ${r.estado}">${r.estado[0].toUpperCase()+r.estado.slice(1)}</span>
     ${cancelable?`<button class="danger" data-cancelar="${r.id}">Cancelar</button>`:''}</div></div>`;
@@ -308,6 +308,7 @@ function vistaDetalle(id){
     <p><span class="muted">Mascota</span><br><strong>${esc(m?.nombre||'—')}</strong></p>
     <p><span class="muted">Fecha y hora</span><br><strong>${fechaLarga(sel.fecha)}${sel.hora?', '+sel.hora:''}</strong></p>
     <p><span class="muted">Valor</span><br><strong>${s?pesos(s.precio):'—'}</strong>, se paga al proveedor</p>
+    <label for="nota">Indicaciones para esta reserva (opcional)</label><input id="nota" maxlength="140" placeholder="Ej.: corte corto en las patas" value="${esc(sel.nota||'')}">
     <div class="alert">Tu reserva queda <strong>Pendiente</strong> hasta que el proveedor la acepte.</div>
     <div id="error" class="err" role="alert"></div>
     <button id="reservar" style="width:100%">Solicitar reserva</button></div></div></div>`, 'buscar');
@@ -317,10 +318,11 @@ function vistaDetalle(id){
   document.querySelectorAll('[data-dia]').forEach(b=>b.onclick=()=>{sel.fecha=b.dataset.dia; sel.hora=null; pintar();});
   if ($('#sigdia')) $('#sigdia').onclick = () => { const i=dias.indexOf(sel.fecha); if (i<13){ sel.fecha=dias[i+1]; sel.hora=null; if(i+1>=7) estado.masFechas=true; pintar(); } };
   if ($('#masfechas')) $('#masfechas').onclick = () => { estado.masFechas=true; pintar(); };
+  $('#nota').oninput = () => { sel.nota = $('#nota').value; };
   $('#reservar').onclick = () => {
     if (!sel.servicioId || !sel.mascotaId || !sel.hora) { $('#error').textContent='Elige el servicio, la mascota y una hora.'; return; }
     if (!horasLibres(p, sel.fecha).find(h=>h.hora===sel.hora && h.libre)) { $('#error').textContent='Esa hora acaba de ser reservada. Elige otra.'; return; }
-    db.reservas.push({id:nuevoId('r'), propId:u.id, provId:p.id, servicioId:sel.servicioId, mascotaId:sel.mascotaId, fecha:sel.fecha, hora:sel.hora, estado:'pendiente'});
+    db.reservas.push({id:nuevoId('r'), propId:u.id, provId:p.id, servicioId:sel.servicioId, mascotaId:sel.mascotaId, fecha:sel.fecha, hora:sel.hora, estado:'pendiente', nota:(sel.nota||'').trim()});
     guardar(); estado.sel=null; estado.masFechas=false; avisar('Solicitud enviada. Queda Pendiente hasta que el proveedor la acepte.'); ir('/reservas');
   };
 }
@@ -369,7 +371,7 @@ function vistaSolicitudes(){
   const mias = db.reservas.filter(r=>r.provId===u.id);
   const pend = mias.filter(r=>r.estado==='pendiente'), conf = mias.filter(r=>r.estado==='confirmada').sort((a,b)=>(a.fecha+a.hora).localeCompare(b.fecha+b.hora));
   const desc = (r) => { const s=db.servicios.find(x=>x.id===r.servicioId), m=db.mascotas.find(x=>x.id===r.mascotaId), o=usuario(r.propId);
-    return `<strong>${esc(s?.nombre)} para ${esc(m?.nombre)}</strong><br><span class="muted">${esc(m?.especie)} · Propietario: ${esc(o?.nombre)} · ${fechaLarga(r.fecha)}, ${r.hora}</span>${m?.obs?`<div class="help" style="color:var(--orange)">Observación: ${esc(m.obs)}</div>`:''}`; };
+    return `<strong>${esc(s?.nombre)} para ${esc(m?.nombre)}</strong><br><span class="muted">${esc(m?.especie)} · Propietario: ${esc(o?.nombre)} · ${fechaLarga(r.fecha)}, ${r.hora}</span>${m?.obs?`<div class="help" style="color:var(--orange)">Observación: ${esc(m.obs)}</div>`:''}${r.nota?`<div class="help" style="color:var(--teal7)">Indicaciones: ${esc(r.nota)}</div>`:''}`; };
   marco(`<div class="head"><div><h1>Hola, ${esc(u.nombre.split(' ')[0])}</h1><p class="sub">${esc(u.negocio)} · Tienes ${pend.length} solicitud(es) esperando respuesta.</p></div>
   <a class="btn prov" href="#servicios">Publicar servicio</a></div>
   <div class="grid"><div class="card"><h2>Solicitudes pendientes</h2>${pend.length?pend.map(r=>`<div class="item"><div>${desc(r)}
