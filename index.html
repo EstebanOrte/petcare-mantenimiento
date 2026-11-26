@@ -247,7 +247,14 @@ function filaReserva(r, acciones=true){
     <span class="muted">${esc(p?.negocio)} · ${fechaLarga(r.fecha)}, ${r.hora}${r.motivo?' · Motivo: '+esc(r.motivo):''}${r.nota?' · Indicaciones: '+esc(r.nota):''}</span>
     ${r.estado==='pendiente'?'<div class="help">El proveedor debe aceptar tu solicitud; su respuesta aparecerá aquí.</div>':''}</div>
     <div style="display:flex;gap:8px;align-items:center"><span class="badge ${r.estado}">${r.estado[0].toUpperCase()+r.estado.slice(1)}</span>
-    ${cancelable?`<button class="danger" data-cancelar="${r.id}">Cancelar</button>`:''}</div></div>`;
+    ${cancelable?`<button class="danger" data-cancelar="${r.id}">Cancelar</button>`:''}
+    ${acciones && r.estado==='completada' ? (r.calificacion ? `<span class="muted" aria-label="Calificación">${'★'.repeat(r.calificacion)}${'☆'.repeat(5-r.calificacion)}</span>` : `<select id="cal-${r.id}" aria-label="Calificación">${[5,4,3,2,1].map(n=>`<option value="${n}">${n} ★</option>`).join('')}</select><button class="sec" data-calificar="${r.id}">Calificar</button>`) : ''}</div></div>`;
+}
+function promedio(provId){ const c = db.reservas.filter(r=>r.provId===provId && r.calificacion).map(r=>r.calificacion); return c.length ? {v:c.reduce((a,b)=>a+b,0)/c.length, n:c.length} : null; }
+function activarCalificar(){
+  document.querySelectorAll('[data-calificar]').forEach(b => b.onclick = () => {
+    const r = db.reservas.find(x=>x.id===b.dataset.calificar); r.calificacion = Number($('#cal-'+r.id).value); guardar(); avisar('¡Gracias por calificar el servicio!'); pintar();
+  });
 }
 function activarCancelar(){
   document.querySelectorAll('[data-cancelar]').forEach(b => b.onclick = () => {
@@ -276,7 +283,7 @@ function vistaBuscar(){
   marco(`<h1>${esc(b.tipo)} en ${esc(b.localidad)}</h1><p class="sub">${res.length} proveedor(es) encontrados</p>
   <div class="card">${formBusqueda()}</div>
   <div class="card" id="resultados">${res.length?res.map(({p,desde})=>`<div class="item"><div><strong>${esc(p.negocio)}</strong><br>
-    <span class="muted">${esc(p.tipo)} en ${esc(p.localidad)} · Atiende de ${p.abre}:00 a ${p.cierra}:00</span></div>
+    <span class="muted">${esc(p.tipo)} en ${esc(p.localidad)} · Atiende de ${p.abre}:00 a ${p.cierra}:00${(()=>{const c=promedio(p.id); return c?` · ★ ${c.v.toFixed(1).replace('.',',')} (${c.n})`:'';})()}</span></div>
     <div style="text-align:right"><span class="muted">Desde</span> <span class="price">${pesos(desde)}</span><br>
     <a class="btn" href="#proveedor-${p.id}">Ver detalle</a></div></div>`).join(''):'<p class="muted">No hay proveedores con esos filtros. Prueba con otra localidad o tipo de servicio.</p>'}</div>`, 'buscar');
   activarBusqueda();
@@ -335,7 +342,7 @@ function vistaReservas(){
   <div class="chips" style="margin-bottom:16px">${filtros.map(x=>`<button class="chip ${x===f?'on':''}" data-f="${x}">${x[0].toUpperCase()+x.slice(1)}</button>`).join('')}</div>
   <div class="card">${lista.length?lista.map(r=>filaReserva(r)).join(''):'<p class="muted">No hay reservas en este estado.</p>'}</div>`, 'reservas');
   document.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{estado.filtro=b.dataset.f; pintar();});
-  activarCancelar();
+  activarCancelar(); activarCalificar();
 }
 
 function vistaMascotas(){
