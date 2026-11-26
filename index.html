@@ -338,11 +338,19 @@ function vistaReservas(){
   const u = yo(), f = estado.filtro;
   const lista = db.reservas.filter(r=>r.propId===u.id && (f==='todas'||r.estado===f)).sort((a,b)=>(b.fecha+b.hora).localeCompare(a.fecha+a.hora));
   const filtros = ['todas','pendiente','confirmada','completada','cancelada','rechazada'];
-  marco(`<h1>Mis reservas</h1><p class="sub">Consulta el estado de tus citas y cancela las que ya no necesites.</p>
+  marco(`<div class="head"><div><h1>Mis reservas</h1><p class="sub">Consulta el estado de tus citas y cancela las que ya no necesites.</p></div>
+  <button class="sec" id="csv">Descargar CSV</button></div>
   <div class="chips" style="margin-bottom:16px">${filtros.map(x=>`<button class="chip ${x===f?'on':''}" data-f="${x}">${x[0].toUpperCase()+x.slice(1)}</button>`).join('')}</div>
   <div class="card">${lista.length?lista.map(r=>filaReserva(r)).join(''):'<p class="muted">No hay reservas en este estado.</p>'}</div>`, 'reservas');
   document.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{estado.filtro=b.dataset.f; pintar();});
   activarCancelar(); activarCalificar();
+  $('#csv').onclick = () => {
+    const filas = db.reservas.filter(r=>r.propId===u.id).map(r=>{ const s=db.servicios.find(x=>x.id===r.servicioId), p=usuario(r.provId), m=db.mascotas.find(x=>x.id===r.mascotaId);
+      return [r.fecha, r.hora, p?.negocio, s?.nombre, m?.nombre, s?.precio, r.estado, r.motivo||'', r.nota||''].map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';'); });
+    const csv = '\ufeff' + ['Fecha;Hora;Proveedor;Servicio;Mascota;Precio;Estado;Motivo;Indicaciones', ...filas].join('\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'})); a.download = 'mis-reservas-petcare.csv'; a.click();
+    avisar('Archivo CSV descargado');
+  };
 }
 
 function vistaMascotas(){
