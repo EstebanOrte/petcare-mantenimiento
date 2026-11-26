@@ -233,11 +233,12 @@ function formBusqueda(){
   return `<form id="fb" class="row">
     <div><label for="btipo">Tipo de servicio</label><select id="btipo">${TIPOS.map(t=>`<option ${t===b.tipo?'selected':''}>${t}</option>`).join('')}</select></div>
     <div><label for="bloc">Localidad</label><select id="bloc">${LOCALIDADES.map(t=>`<option ${t===b.localidad?'selected':''}>${t}</option>`).join('')}</select></div>
+    <div><label for="bnom">Nombre del negocio (opcional)</label><input id="bnom" placeholder="Ej.: Patitas" value="${esc(b.nombre||'')}"></div>
     <div><label for="bmax">Precio máximo (opcional)</label><input id="bmax" type="number" min="0" step="1000" value="${esc(b.max)}"></div>
     <div style="flex:0"><button>Buscar</button></div></form>`;
 }
 function activarBusqueda(){
-  $('#fb').onsubmit = (e) => { e.preventDefault(); estado.busqueda = {tipo:$('#btipo').value, localidad:$('#bloc').value, max:$('#bmax').value}; ir('/buscar'); };
+  $('#fb').onsubmit = (e) => { e.preventDefault(); estado.busqueda = {tipo:$('#btipo').value, localidad:$('#bloc').value, max:$('#bmax').value, nombre:$('#bnom').value.trim()}; ir('/buscar'); };
 }
 function filaReserva(r, acciones=true){
   const s = db.servicios.find(x=>x.id===r.servicioId), p = usuario(r.provId), m = db.mascotas.find(x=>x.id===r.mascotaId);
@@ -271,7 +272,7 @@ function vistaBuscar(){
   const res = db.usuarios.filter(u=>u.rol==='proveedor' && u.tipo===b.tipo && u.localidad===b.localidad).map(p=>{
     const sv = db.servicios.filter(s=>s.provId===p.id && s.activo!==false);
     return {p, desde: sv.length?Math.min(...sv.map(s=>s.precio)):null};
-  }).filter(x=>x.desde!==null && (!b.max || x.desde<=Number(b.max)));
+  }).filter(x=>x.desde!==null && (!b.max || x.desde<=Number(b.max)) && (!b.nombre || x.p.negocio.toLowerCase().includes(b.nombre.toLowerCase())));
   marco(`<h1>${esc(b.tipo)} en ${esc(b.localidad)}</h1><p class="sub">${res.length} proveedor(es) encontrados</p>
   <div class="card">${formBusqueda()}</div>
   <div class="card" id="resultados">${res.length?res.map(({p,desde})=>`<div class="item"><div><strong>${esc(p.negocio)}</strong><br>
