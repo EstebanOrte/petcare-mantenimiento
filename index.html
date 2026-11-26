@@ -372,8 +372,10 @@ function vistaSolicitudes(){
   const pend = mias.filter(r=>r.estado==='pendiente'), conf = mias.filter(r=>r.estado==='confirmada').sort((a,b)=>(a.fecha+a.hora).localeCompare(b.fecha+b.hora));
   const desc = (r) => { const s=db.servicios.find(x=>x.id===r.servicioId), m=db.mascotas.find(x=>x.id===r.mascotaId), o=usuario(r.propId);
     return `<strong>${esc(s?.nombre)} para ${esc(m?.nombre)}</strong><br><span class="muted">${esc(m?.especie)} · Propietario: ${esc(o?.nombre)} · ${fechaLarga(r.fecha)}, ${r.hora}</span>${m?.obs?`<div class="help" style="color:var(--orange)">Observación: ${esc(m.obs)}</div>`:''}${r.nota?`<div class="help" style="color:var(--teal7)">Indicaciones: ${esc(r.nota)}</div>`:''}`; };
+  const deHoy = conf.filter(r=>r.fecha===hoy());
   marco(`<div class="head"><div><h1>Hola, ${esc(u.nombre.split(' ')[0])}</h1><p class="sub">${esc(u.negocio)} · Tienes ${pend.length} solicitud(es) esperando respuesta.</p></div>
   <a class="btn prov" href="#servicios">Publicar servicio</a></div>
+  <div class="card" id="hoy"><h2>Citas de hoy: ${deHoy.length}</h2>${deHoy.length?deHoy.map(r=>`<div class="item"><div>${desc(r)}</div></div>`).join(''):'<p class="muted">No tienes citas confirmadas para hoy.</p>'}</div>
   <div class="grid"><div class="card"><h2>Solicitudes pendientes</h2>${pend.length?pend.map(r=>`<div class="item"><div>${desc(r)}
     <div class="row" style="margin-top:8px"><select id="mot-${r.id}" aria-label="Motivo del rechazo"><option>No tengo disponibilidad</option><option>No atiendo esa especie o raza</option><option>Otro motivo</option></select><input id="otro-${r.id}" placeholder="Escribe el motivo" aria-label="Otro motivo" hidden></div></div>
     <div style="display:flex;gap:8px;flex-direction:column"><button class="prov" data-ok="${r.id}">Aceptar</button><button class="danger" data-no="${r.id}">Rechazar</button></div></div>`).join(''):'<p class="muted">No tienes solicitudes pendientes.</p>'}</div>
