@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PetCare · MVP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:wght@700&display=swap">
+<style>
+:root{--ink:#12303A;--ink2:#4B6169;--teal:#1F7A8C;--teal7:#17606F;--teal1:#E1F2F5;--orange:#A64C0E;--ok:#2A7448;--warn:#7A5600;--bad:#B03A50;--line:#6F858C;--bg:#F3F7F8;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 "Atkinson Hyperlegible","Segoe UI",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+a{color:var(--teal7)}
+header{background:var(--ink);color:#fff;display:flex;align-items:center;gap:8px;padding:10px 24px;flex-wrap:wrap}
+header .logo{font-weight:700;font-size:20px;margin-right:16px}
+header nav a{color:#fff;text-decoration:none;padding:6px 10px;border-radius:6px;font-size:15px}
+header nav a.on{background:rgba(255,255,255,.18)}
+header .user{margin-left:auto;font-size:14px}
+header .user button{margin-left:8px;background:none;border:1px solid #fff;color:#fff;border-radius:6px;padding:4px 10px;cursor:pointer}
+main{max-width:1040px;margin:0 auto;padding:24px 16px 48px}
+h1,h2,.logo{font-family:"Bricolage Grotesque","Segoe UI",Arial,sans-serif}
+h1{font-size:32px;line-height:1.25;margin:0 0 4px}h2{font-size:22px;margin:0 0 12px}
+.days{display:flex;gap:8px;flex-wrap:wrap}.day{background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-weight:600;text-align:center;min-width:64px;line-height:1.2}.day small{display:block;font-weight:400;font-size:13px}.day.on{background:var(--ink);color:#fff;border-color:var(--ink)}.day:hover{background:var(--teal1)}.day.on:hover{background:var(--ink)}
+.help{font-size:14px;color:var(--warn);margin-top:2px}
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.sub{color:var(--ink2);margin:0 0 20px}
+.card{background:var(--card);border:1px solid #D5E0E3;border-radius:10px;padding:18px;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.row>*{flex:1;min-width:150px}
+label{display:block;font-size:14px;font-weight:600;margin:10px 0 4px}
+input,select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:6px;font:inherit;background:#fff}
+button,.btn{font:inherit;font-weight:600;border:0;border-radius:6px;padding:9px 16px;cursor:pointer;background:var(--teal);color:#fff;text-decoration:none;display:inline-block}
+button:hover{background:var(--teal7)}
+.sec{background:#fff;color:var(--teal7);border:1px solid var(--teal7)}.sec:hover{background:var(--teal1)}
+.danger{background:#fff;color:var(--bad);border:1px solid var(--bad)}.danger:hover{background:#FBEFF1}
+.prov{background:var(--orange)}.prov:hover{background:#8a3f0b}
+:focus-visible{outline:3px solid #F2A541;outline-offset:2px}
+.auth{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
+.auth .hero{background:var(--ink);color:#fff;padding:48px;display:flex;flex-direction:column;justify-content:center}
+.auth .hero h1{font-size:36px}.auth .hero p{color:#cfe0e4}
+.auth .form{padding:48px;max-width:460px;align-self:center}
+.demo{background:var(--teal1);border-radius:8px;padding:10px 12px;font-size:14px;margin-top:18px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid #E3EBED;padding:12px 0}
+.item:first-of-type{border-top:0}
+.muted{color:var(--ink2);font-size:14px}
+.price{font-weight:700;font-size:20px}
+.badge{font-size:13px;font-weight:700;border-radius:20px;padding:2px 10px;white-space:nowrap}
+.pendiente{background:#FFF1C9;color:var(--warn)}.confirmada{background:#DDF1E4;color:var(--ok)}
+.completada{background:#E1E8EA;color:var(--ink2)}.cancelada,.rechazada{background:#FBE3E8;color:var(--bad)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:20px;padding:6px 14px;font-weight:600}
+.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.opt{display:block;border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;cursor:pointer;font-weight:400}
+.opt.on{border:2px solid var(--teal);background:var(--teal1)}
+.alert{background:var(--teal1);border-left:4px solid var(--teal);padding:10px 12px;border-radius:6px;font-size:14px;margin:12px 0}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 20px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+.err{color:var(--bad);font-size:14px;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid #E3EBED}
+footer{text-align:center;color:var(--ink2);font-size:13px;padding:16px}
+header nav a{white-space:nowrap}
+@media(max-width:760px){.grid,.auth{grid-template-columns:1fr}.item{flex-wrap:wrap}.item>div:first-child,.item>span:first-child{flex:1 1 230px}header{padding:10px 12px}header nav{display:flex;flex-wrap:wrap;width:100%}header nav a{padding:6px 8px}header .user{margin-left:0;width:100%;display:flex;justify-content:space-between;align-items:center}.auth .hero{padding:28px}.auth .form{padding:24px}h1{font-size:24px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ===== Base de datos en el navegador (localStorage) ===== */
+const KEY = 'petcare-db-v2';
+const TIPOS = ['Veterinaria','Peluquería','Paseo','Cuidado temporal'];
+const LOCALIDADES = ['Chapinero','Engativá','Kennedy','Suba','Usaquén'];
+const iso = (d) => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const hoy = () => iso(new Date());
+const sumarDias = (n) => { const d = new Date(); d.setDate(d.getDate()+n); return iso(d); };
+
+function datosIniciales() {
+  const p = (id,nombre,negocio,tipo,localidad,correo) => ({id,rol:'proveedor',nombre,negocio,tipo,localidad,correo,clave:'123456',abre:8,cierra:17});
+  return {
+    usuarios: [
+      {id:'u1',rol:'propietario',nombre:'Laura Rincón',correo:'laura@petcare.co',clave:'123456'},
+      p('u2','Jorge Pardo','Peluquería Canina Engativá','Peluquería','Engativá','jorge@petcare.co'),
+      p('u3','Marta Gil','Peluquería Patitas','Peluquería','Kennedy','patitas@petcare.co'),
+      p('u4','Andrés Ruiz','Veterinaria San Jorge','Veterinaria','Kennedy','sanjorge@petcare.co'),
+      p('u5','Camila Rojas','Paseos Kennedy','Paseo','Kennedy','paseos@petcare.co'),
+      p('u6','Diana Mora','Hotelito Suba','Cuidado temporal','Suba','hotelito@petcare.co'),
+    ],
+    mascotas: [
+      {id:'m1',duenoId:'u1',nombre:'Toby',especie:'Perro',raza:'Criollo',edad:4,obs:'Le asusta el secador'},
+      {id:'m2',duenoId:'u1',nombre:'Mishi',especie:'Gato',raza:'Mestiza',edad:3,obs:''},
+    ],
+    servicios: [
+      {id:'s1',provId:'u2',nombre:'Baño',precio:30000,duracion:60},
+      {id:'s2',provId:'u2',nombre:'Baño y corte',precio:45000,duracion:90},
+      {id:'s3',provId:'u3',nombre:'Baño',precio:35000,duracion:60},
+      {id:'s4',provId:'u3',nombre:'Corte',precio:45000,duracion:90},
+      {id:'s5',provId:'u4',nombre:'Consulta general',precio:60000,duracion:30},
+      {id:'s6',provId:'u4',nombre:'Vacuna',precio:45000,duracion:20},
+      {id:'s7',provId:'u5',nombre:'Paseo de una hora',precio:15000,duracion:60},
+      {id:'s8',provId:'u6',nombre:'Noche de cuidado',precio:70000,duracion:60},
+    ],
+    reservas: [
+      {id:'r1',propId:'u1',provId:'u2',servicioId:'s1',mascotaId:'m1',fecha:sumarDias(2),hora:'09:00',estado:'pendiente'},
+      {id:'r2',propId:'u1',provId:'u4',servicioId:'s6',mascotaId:'m1',fecha:sumarDias(5),hora:'10:00',estado:'confirmada'},
+    ],
+  };
+}
+let db = cargar();
+function cargar(){ try { return JSON.parse(localStorage.getItem(KEY)) || datosIniciales(); } catch(e){ return datosIniciales(); } }
+function guardar(){ try { localStorage.setItem(KEY, JSON.stringify(db)); } catch(e){} }
+function sesion(){ try { return sessionStorage.getItem('petcare-user'); } catch(e){ return window._u; } }
+function setSesion(id){ window._u=id; try { id ? sessionStorage.setItem('petcare-user',id) : sessionStorage.removeItem('petcare-user'); } catch(e){} }
+const nuevoId = (p) => p + Date.now().toString(36) + Math.random().toString(36).slice(2,5);
+const usuario = (id) => db.usuarios.find(u=>u.id===id);
+const yo = () => usuario(sesion());
+const $ = (s) => document.querySelector(s);
+const pesos = (n) => '$' + Number(n).toLocaleString('es-CO');
+const esc = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function fechaLarga(f){ return new Date(f+'T12:00').toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'long'}); }
+function avisar(msg){ document.querySelectorAll('.toast').forEach(x=>x.remove()); const t=document.createElement('div'); t.className='toast'; t.setAttribute('role','status'); t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),2600); }
+
+/* Horas libres de un proveedor en una fecha (evita reservas cruzadas) */
+function horasLibres(prov, fecha){
+  const ocupadas = db.reservas.filter(r=>r.provId===prov.id && r.fecha===fecha && ['pendiente','confirmada'].includes(r.estado)).map(r=>r.hora);
+  const ahora = new Date().getHours();
+  const horas = [];
+  for (let h=prov.abre; h<prov.cierra; h++){
+    const hh = String(h).padStart(2,'0')+':00';
+    if (fecha===hoy() && h<=ahora) continue;
+    horas.push({hora:hh, libre:!ocupadas.includes(hh)});
+  }
+  return horas;
+}
+
+/* ===== Navegación ===== */
+let estado = {filtro:'todas', busqueda:{tipo:'Peluquería',localidad:'Kennedy',max:''}};
+function ir(ruta){ ruta = ruta.replace('/',''); if (location.hash === '#'+ruta) pintar(); else location.hash = ruta; }
+window.addEventListener('hashchange', pintar);
+
+function pintar(){
+  const u = yo();
+  const [ruta, param] = location.hash.slice(1).split('-');
+  if (!u) return ruta==='registro' ? vistaRegistro() : vistaLogin();
+  const vistas = u.rol==='propietario'
+    ? {inicio:vistaInicio, buscar:vistaBuscar, proveedor:vistaDetalle, reservas:vistaReservas, mascotas:vistaMascotas}
+    : {solicitudes:vistaSolicitudes, servicios:vistaServicios};
+  const def = u.rol==='propietario' ? 'inicio' : 'solicitudes';
+  (vistas[ruta] || vistas[def])(param);
+}
+
+function marco(contenido, activo){
+  const u = yo();
+  const menu = u.rol==='propietario'
+    ? [['inicio','Inicio'],['buscar','Buscar servicios'],['reservas','Mis reservas'],['mascotas','Mis mascotas']]
+    : [['solicitudes','Solicitudes'],['servicios','Servicios y horarios']];
+  $('#app').innerHTML = `
+  <header><span class="logo">🐾 PetCare</span>
+    <nav aria-label="Menú principal">${menu.map(([r,t])=>`<a href="#${r}" class="${r===activo?'on':''}">${t}</a>`).join('')}</nav>
+    <span class="user">${esc(u.nombre)} · ${u.rol==='propietario'?'Propietario':'Proveedor'}<button id="salir">Salir</button></span>
+  </header>
+  <main>${contenido}</main>
+  <footer>PetCare · MVP · Bogotá 2026 · <a href="#" id="reset">Restablecer datos de prueba</a></footer>`;
+  $('#salir').onclick = () => { setSesion(null); ir('/login'); };
+  $('#reset').onclick = (e) => { e.preventDefault(); db = datosIniciales(); guardar(); avisar('Datos de prueba restablecidos'); pintar(); };
+}
+
+/* ===== Acceso ===== */
+function vistaLogin(){
+  $('#app').innerHTML = `
+  <div class="auth"><div class="hero"><span class="logo" style="font-weight:700">🐾 PetCare</span>
+    <h1>Reserva el cuidado de tu mascota sin llamar a nadie</h1>
+    <p>Compara precios, mira los horarios disponibles y solicita tu cita en un solo lugar.</p></div>
+  <form class="form" id="f" novalidate><h1>Inicia sesión</h1>
+    <label for="correo">Correo electrónico</label><input id="correo" type="email" autocomplete="email">
+    <label for="clave">Contraseña</label><input id="clave" type="password" autocomplete="current-password">
+    <div id="error" class="err" role="alert"></div>
+    <p><button style="width:100%">Ingresar</button></p>
+    <p>¿No tienes cuenta? <a href="#registro">Regístrate</a></p>
+    <div class="demo"><strong>Cuentas de prueba</strong> (contraseña 123456)<br>Propietaria: laura@petcare.co<br>Proveedor: jorge@petcare.co</div>
+  </form></div>`;
+  $('#f').onsubmit = (e) => {
+    e.preventDefault();
+    const u = db.usuarios.find(x => x.correo===$('#correo').value.trim().toLowerCase() && x.clave===$('#clave').value);
+    if (!u) { $('#error').textContent = 'Correo o contraseña incorrectos.'; return; }
+    setSesion(u.id); ir(u.rol==='propietario'?'/inicio':'/solicitudes');
+  };
+}
+
+function vistaRegistro(){
+  $('#app').innerHTML = `
+  <div class="auth"><div class="hero"><span class="logo" style="font-weight:700">🐾 PetCare</span>
+    <h1>Una sola cuenta para encontrar servicios o recibir clientes</h1>
+    <p>Tus datos se usan solo para gestionar tus reservas (Ley 1581 de 2012).</p></div>
+  <form class="form" id="f" novalidate><h1>Crea tu cuenta</h1>
+    <label for="rol">Tipo de cuenta</label><select id="rol"><option value="propietario">Propietario: busco servicios</option><option value="proveedor">Proveedor: ofrezco servicios</option></select>
+    <label for="nombre">Nombre completo</label><input id="nombre">
+    <div id="extra" hidden>
+      <label for="negocio">Nombre del negocio</label><input id="negocio">
+      <div class="row"><div><label for="tipo">Tipo de servicio</label><select id="tipo">${TIPOS.map(t=>`<option>${t}</option>`).join('')}</select></div>
+      <div><label for="loc">Localidad</label><select id="loc">${LOCALIDADES.map(t=>`<option>${t}</option>`).join('')}</select></div></div>
+    </div>
+    <label for="correo">Correo electrónico</label><input id="correo" type="email">
+    <label for="clave">Contraseña (mínimo 6 caracteres)</label><input id="clave" type="password">
+    <label style="font-weight:400"><input type="checkbox" id="acepto" style="width:auto"> Acepto la política de tratamiento de datos personales.</label>
+    <div id="error" class="err" role="alert"></div>
+    <p><button style="width:100%">Crear cuenta</button></p>
+    <p>¿Ya tienes cuenta? <a href="#login">Inicia sesión</a></p>
+  </form></div>`;
+  $('#rol').onchange = () => $('#extra').hidden = $('#rol').value!=='proveedor';
+  $('#f').onsubmit = (e) => {
+    e.preventDefault();
+    const v = (id) => $('#'+id).value.trim();
+    const correo = v('correo').toLowerCase();
+    let error = '';
+    if (!v('nombre')) error = 'Escribe tu nombre.';
+    else if (!/^\S+@\S+\.\S+$/.test(correo)) error = 'Escribe un correo válido.';
+    else if (db.usuarios.some(u=>u.correo===correo)) error = 'Ya existe una cuenta con ese correo.';
+    else if ($('#clave').value.length<6) error = 'La contraseña debe tener al menos 6 caracteres.';
+    else if ($('#rol').value==='proveedor' && !v('negocio')) error = 'Escribe el nombre del negocio.';
+    else if (!$('#acepto').checked) error = 'Debes aceptar la política de datos.';
+    if (error) { $('#error').textContent = error; return; }
+    const u = {id:nuevoId('u'), rol:$('#rol').value, nombre:v('nombre'), correo, clave:$('#clave').value};
+    if (u.rol==='proveedor') Object.assign(u,{negocio:v('negocio'),tipo:v('tipo'),localidad:v('loc'),abre:8,cierra:17});
+    db.usuarios.push(u); guardar(); setSesion(u.id);
+    avisar('Cuenta creada. ¡Bienvenido a PetCare!');
+    ir(u.rol==='propietario'?'/inicio':'/servicios');
+  };
+}
+
+/* ===== Propietario ===== */
+function formBusqueda(){
+  const b = estado.busqueda;
+  return `<form id="fb" class="row">
+    <div><label for="btipo">Tipo de servicio</label><select id="btipo">${TIPOS.map(t=>`<option ${t===b.tipo?'selected':''}>${t}</option>`).join('')}</select></div>
+    <div><label for="bloc">Localidad</label><select id="bloc">${LOCALIDADES.map(t=>`<option ${t===b.localidad?'selected':''}>${t}</option>`).join('')}</select></div>
+    <div><label for="bmax">Precio máximo (opcional)</label><input id="bmax" type="number" min="0" step="1000" value="${esc(b.max)}"></div>
+    <div style="flex:0"><button>Buscar</button></div></form>`;
+}
+function activarBusqueda(){
+  $('#fb').onsubmit = (e) => { e.preventDefault(); estado.busqueda = {tipo:$('#btipo').value, localidad:$('#bloc').value, max:$('#bmax').value}; ir('/buscar'); };
+}
+function filaReserva(r, acciones=true){
+  const s = db.servicios.find(x=>x.id===r.servicioId), p = usuario(r.provId), m = db.mascotas.find(x=>x.id===r.mascotaId);
+  const cancelable = acciones && ['pendiente','confirmada'].includes(r.estado);
+  return `<div class="item"><div><strong>${esc(s?.nombre)} para ${esc(m?.nombre)}</strong><br>
+    <span class="muted">${esc(p?.negocio)} · ${fechaLarga(r.fecha)}, ${r.hora}${r.motivo?' · Motivo: '+esc(r.motivo):''}</span>
+    ${r.estado==='pendiente'?'<div class="help">El proveedor debe aceptar tu solicitud; su respuesta aparecerá aquí.</div>':''}</div>
+    <div style="display:flex;gap:8px;align-items:center"><span class="badge ${r.estado}">${r.estado[0].toUpperCase()+r.estado.slice(1)}</span>
+    ${cancelable?`<button class="danger" data-cancelar="${r.id}">Cancelar</button>`:''}</div></div>`;
+}
+function activarCancelar(){
+  document.querySelectorAll('[data-cancelar]').forEach(b => b.onclick = () => {
+    const r = db.reservas.find(x=>x.id===b.dataset.cancelar); if (!confirm('¿Seguro que quieres cancelar esta reserva? El proveedor liberará la hora.')) return; r.estado='cancelada'; guardar(); avisar('Reserva cancelada'); pintar();
+  });
+}
+
+function vistaInicio(){
+  const u = yo();
+  const mias = db.reservas.filter(r=>r.propId===u.id && ['pendiente','confirmada'].includes(r.estado) && r.fecha>=hoy()).sort((a,b)=>(a.fecha+a.hora).localeCompare(b.fecha+b.hora));
+  const mascotas = db.mascotas.filter(m=>m.duenoId===u.id);
+  marco(`<h1>Hola, ${esc(u.nombre.split(' ')[0])}</h1><p class="sub">¿Qué necesita tu mascota esta semana?</p>
+  <div class="card">${formBusqueda()}</div>
+  <div class="grid"><div class="card"><h2>Próximas reservas</h2>${mias.length?mias.map(r=>filaReserva(r)).join(''):'<p class="muted">No tienes reservas próximas.</p>'}</div>
+  <div class="card"><h2>Mis mascotas</h2>${mascotas.map(m=>`<div class="item"><span><strong>${esc(m.nombre)}</strong><br><span class="muted">${esc(m.especie)}, ${esc(m.raza)}</span></span></div>`).join('')||'<p class="muted">Aún no registras mascotas.</p>'}
+  <a class="btn sec" href="#mascotas">Gestionar mascotas</a></div></div>`, 'inicio');
+  activarBusqueda(); activarCancelar();
+}
+
+function vistaBuscar(){
+  const b = estado.busqueda;
+  const res = db.usuarios.filter(u=>u.rol==='proveedor' && u.tipo===b.tipo && u.localidad===b.localidad).map(p=>{
+    const sv = db.servicios.filter(s=>s.provId===p.id && s.activo!==false);
+    return {p, desde: sv.length?Math.min(...sv.map(s=>s.precio)):null};
+  }).filter(x=>x.desde!==null && (!b.max || x.desde<=Number(b.max)));
+  marco(`<h1>${esc(b.tipo)} en ${esc(b.localidad)}</h1><p class="sub">${res.length} proveedor(es) encontrados</p>
+  <div class="card">${formBusqueda()}</div>
+  <div class="card" id="resultados">${res.length?res.map(({p,desde})=>`<div class="item"><div><strong>${esc(p.negocio)}</strong><br>
+    <span class="muted">${esc(p.tipo)} en ${esc(p.localidad)} · Atiende de ${p.abre}:00 a ${p.cierra}:00</span></div>
+    <div style="text-align:right"><span class="muted">Desde</span> <span class="price">${pesos(desde)}</span><br>
+    <a class="btn" href="#proveedor-${p.id}">Ver detalle</a></div></div>`).join(''):'<p class="muted">No hay proveedores con esos filtros. Prueba con otra localidad o tipo de servicio.</p>'}</div>`, 'buscar');
+  activarBusqueda();
+}
+
+function vistaDetalle(id){
+  const p = usuario(id); if (!p) return ir('/buscar');
+  if (!estado.sel || estado.sel.provId!==id) estado.masFechas=false;
+  const u = yo();
+  const servicios = db.servicios.filter(s=>s.provId===p.id && s.activo!==false);
+  const mascotas = db.mascotas.filter(m=>m.duenoId===u.id);
+  const sel = estado.sel && estado.sel.provId===id ? estado.sel : (estado.sel = {provId:id, servicioId:servicios[0]?.id, mascotaId:mascotas[0]?.id, fecha:hoy(), hora:null});
+  const dias = Array.from({length:14},(_,i)=>sumarDias(i));
+  const horas = horasLibres(p, sel.fecha);
+  const s = servicios.find(x=>x.id===sel.servicioId), m = mascotas.find(x=>x.id===sel.mascotaId);
+  marco(`<p class="muted"><a href="#buscar">← Resultados</a></p><h1>${esc(p.negocio)}</h1>
+  <p class="sub">${esc(p.tipo)} en ${esc(p.localidad)}, Bogotá · Atiende de ${p.abre}:00 a ${p.cierra}:00</p>
+  <div class="grid"><div>
+    <div class="card"><h2>1. Elige el servicio</h2>${servicios.map(x=>`<button type="button" class="opt ${x.id===sel.servicioId?'on':''}" data-serv="${x.id}" style="width:100%;text-align:left;color:var(--ink);background:${x.id===sel.servicioId?'var(--teal1)':'#fff'}"><strong>${esc(x.nombre)}</strong> · ${x.duracion} min · ${pesos(x.precio)}</button>`).join('')}</div>
+    <div class="card"><h2>2. Elige la mascota</h2>${mascotas.length?`<div class="chips">${mascotas.map(x=>`<button type="button" class="chip ${x.id===sel.mascotaId?'on':''}" data-masc="${x.id}">${esc(x.nombre)}</button>`).join('')}</div>`:'<p>Primero <a href="#mascotas">registra una mascota</a>.</p>'}</div>
+    <div class="card"><h2>3. Elige fecha y hora</h2>
+      <label id="lfecha">Fecha</label><div class="days" role="group" aria-labelledby="lfecha">${dias.slice(0, estado.masFechas?14:7).map(d=>{const f=new Date(d+'T12:00');return `<button type="button" class="day ${d===sel.fecha?'on':''}" data-dia="${d}" aria-label="${fechaLarga(d)}"><small>${f.toLocaleDateString('es-CO',{weekday:'short'})}</small>${f.getDate()} ${f.toLocaleDateString('es-CO',{month:'short'})}</button>`}).join('')}
+      ${estado.masFechas?'':'<button type="button" class="sec" id="masfechas">Ver más fechas</button>'}</div>
+      <label>Horas disponibles</label><div class="chips">${horas.length?horas.map(h=>`<button type="button" class="chip ${h.hora===sel.hora?'on':''}" data-hora="${h.hora}" ${h.libre?'':'disabled style="text-decoration:line-through;opacity:.45;cursor:not-allowed"'}>${h.hora}</button>`).join(''):`<span class="muted">No quedan horas para este día.</span> <button type="button" class="sec" id="sigdia">Ver el día siguiente</button>`}</div>
+      <p class="muted">Las horas tachadas ya están reservadas.</p></div>
+  </div>
+  <div><div class="card"><h2>Resumen</h2>
+    <p><span class="muted">Servicio</span><br><strong>${esc(s?.nombre||'—')}</strong></p>
+    <p><span class="muted">Mascota</span><br><strong>${esc(m?.nombre||'—')}</strong></p>
+    <p><span class="muted">Fecha y hora</span><br><strong>${fechaLarga(sel.fecha)}${sel.hora?', '+sel.hora:''}</strong></p>
+    <p><span class="muted">Valor</span><br><strong>${s?pesos(s.precio):'—'}</strong>, se paga al proveedor</p>
+    <div class="alert">Tu reserva queda <strong>Pendiente</strong> hasta que el proveedor la acepte.</div>
+    <div id="error" class="err" role="alert"></div>
+    <button id="reservar" style="width:100%">Solicitar reserva</button></div></div></div>`, 'buscar');
+  document.querySelectorAll('[data-serv]').forEach(b=>b.onclick=()=>{sel.servicioId=b.dataset.serv; pintar();});
+  document.querySelectorAll('[data-masc]').forEach(b=>b.onclick=()=>{sel.mascotaId=b.dataset.masc; pintar();});
+  document.querySelectorAll('[data-hora]').forEach(b=>b.onclick=()=>{sel.hora=b.dataset.hora; pintar();});
+  document.querySelectorAll('[data-dia]').forEach(b=>b.onclick=()=>{sel.fecha=b.dataset.dia; sel.hora=null; pintar();});
+  if ($('#sigdia')) $('#sigdia').onclick = () => { const i=dias.indexOf(sel.fecha); if (i<13){ sel.fecha=dias[i+1]; sel.hora=null; if(i+1>=7) estado.masFechas=true; pintar(); } };
+  if ($('#masfechas')) $('#masfechas').onclick = () => { estado.masFechas=true; pintar(); };
+  $('#reservar').onclick = () => {
+    if (!sel.servicioId || !sel.mascotaId || !sel.hora) { $('#error').textContent='Elige el servicio, la mascota y una hora.'; return; }
+    if (!horasLibres(p, sel.fecha).find(h=>h.hora===sel.hora && h.libre)) { $('#error').textContent='Esa hora acaba de ser reservada. Elige otra.'; return; }
+    db.reservas.push({id:nuevoId('r'), propId:u.id, provId:p.id, servicioId:sel.servicioId, mascotaId:sel.mascotaId, fecha:sel.fecha, hora:sel.hora, estado:'pendiente'});
+    guardar(); estado.sel=null; estado.masFechas=false; avisar('Solicitud enviada. Queda Pendiente hasta que el proveedor la acepte.'); ir('/reservas');
+  };
+}
+
+function vistaReservas(){
+  const u = yo(), f = estado.filtro;
+  const lista = db.reservas.filter(r=>r.propId===u.id && (f==='todas'||r.estado===f)).sort((a,b)=>(b.fecha+b.hora).localeCompare(a.fecha+a.hora));
+  const filtros = ['todas','pendiente','confirmada','completada','cancelada','rechazada'];
+  marco(`<h1>Mis reservas</h1><p class="sub">Consulta el estado de tus citas y cancela las que ya no necesites.</p>
+  <div class="chips" style="margin-bottom:16px">${filtros.map(x=>`<button class="chip ${x===f?'on':''}" data-f="${x}">${x[0].toUpperCase()+x.slice(1)}</button>`).join('')}</div>
+  <div class="card">${lista.length?lista.map(r=>filaReserva(r)).join(''):'<p class="muted">No hay reservas en este estado.</p>'}</div>`, 'reservas');
+  document.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{estado.filtro=b.dataset.f; pintar();});
+  activarCancelar();
+}
+
+function vistaMascotas(){
+  const u = yo(), lista = db.mascotas.filter(m=>m.duenoId===u.id);
+  const ed = lista.find(m=>m.id===estado.editando);
+  marco(`<h1>Mis mascotas</h1><p class="sub">Guarda sus datos una sola vez y úsalos en cada reserva.</p>
+  <div class="grid"><div class="card">${lista.map(m=>`<div class="item"><span><strong>${esc(m.nombre)}</strong><br><span class="muted">${esc(m.especie)}, ${esc(m.raza)}, ${esc(m.edad)} años${m.obs?' · '+esc(m.obs):''}</span></span>
+    <span style="display:flex;gap:8px"><button class="sec" data-editar="${m.id}">Editar</button><button class="danger" data-borrar="${m.id}">Eliminar</button></span></div>`).join('')||'<p class="muted">Aún no registras mascotas.</p>'}</div>
+  <form class="card" id="fm" novalidate><h2>${ed?'Editar mascota':'Agregar mascota'}</h2>
+    <label for="mnom">Nombre</label><input id="mnom" value="${esc(ed?.nombre)}">
+    <div class="row"><div><label for="mesp">Especie</label><select id="mesp">${['Perro','Gato','Otra'].map(x=>`<option ${ed?.especie===x?'selected':''}>${x}</option>`).join('')}</select></div>
+    <div><label for="medad">Edad (años)</label><input id="medad" type="number" min="0" max="30" value="${esc(ed?ed.edad:1)}"></div></div>
+    <label for="mraza">Raza</label><input id="mraza" value="${esc(ed?.raza)}">
+    <label for="mobs">Observaciones para el proveedor (opcional)</label><input id="mobs" placeholder="Ej.: le asusta el secador" value="${esc(ed?.obs)}">
+    <div id="error" class="err" role="alert"></div>
+    <p class="row" style="flex-wrap:nowrap"><button>Guardar mascota</button>${ed?'<button type="button" class="sec" id="mcancel">Cancelar</button>':''}</p></form></div>`, 'mascotas');
+  document.querySelectorAll('[data-borrar]').forEach(b=>b.onclick=()=>{
+    if (db.reservas.some(r=>r.mascotaId===b.dataset.borrar && ['pendiente','confirmada'].includes(r.estado))) { avisar('No puedes eliminarla: tiene reservas activas.'); return; }
+    if (!confirm('¿Eliminar esta mascota?')) return;
+    db.mascotas=db.mascotas.filter(m=>m.id!==b.dataset.borrar); estado.editando=null; guardar(); avisar('Mascota eliminada'); pintar(); });
+  document.querySelectorAll('[data-editar]').forEach(b=>b.onclick=()=>{ estado.editando=b.dataset.editar; pintar(); $('#mnom').focus(); });
+  if ($('#mcancel')) $('#mcancel').onclick = () => { estado.editando=null; pintar(); };
+  $('#fm').onsubmit = (e) => { e.preventDefault();
+    if (!$('#mnom').value.trim()) { $('#error').textContent='Escribe el nombre de tu mascota.'; return; }
+    const datos = {nombre:$('#mnom').value.trim(), especie:$('#mesp').value, raza:$('#mraza').value.trim()||'Sin raza', edad:$('#medad').value||0, obs:$('#mobs').value.trim()};
+    if (ed) Object.assign(ed, datos); else db.mascotas.push({id:nuevoId('m'), duenoId:u.id, ...datos});
+    estado.editando=null; guardar(); avisar(ed?'Mascota actualizada':'Mascota guardada'); pintar(); };
+}
+
+/* ===== Proveedor ===== */
+function vistaSolicitudes(){
+  const u = yo();
+  const mias = db.reservas.filter(r=>r.provId===u.id);
+  const pend = mias.filter(r=>r.estado==='pendiente'), conf = mias.filter(r=>r.estado==='confirmada').sort((a,b)=>(a.fecha+a.hora).localeCompare(b.fecha+b.hora));
+  const desc = (r) => { const s=db.servicios.find(x=>x.id===r.servicioId), m=db.mascotas.find(x=>x.id===r.mascotaId), o=usuario(r.propId);
+    return `<strong>${esc(s?.nombre)} para ${esc(m?.nombre)}</strong><br><span class="muted">${esc(m?.especie)} · Propietario: ${esc(o?.nombre)} · ${fechaLarga(r.fecha)}, ${r.hora}</span>${m?.obs?`<div class="help" style="color:var(--orange)">Observación: ${esc(m.obs)}</div>`:''}`; };
+  marco(`<div class="head"><div><h1>Hola, ${esc(u.nombre.split(' ')[0])}</h1><p class="sub">${esc(u.negocio)} · Tienes ${pend.length} solicitud(es) esperando respuesta.</p></div>
+  <a class="btn prov" href="#servicios">Publicar servicio</a></div>
+  <div class="grid"><div class="card"><h2>Solicitudes pendientes</h2>${pend.length?pend.map(r=>`<div class="item"><div>${desc(r)}
+    <div class="row" style="margin-top:8px"><select id="mot-${r.id}" aria-label="Motivo del rechazo"><option>No tengo disponibilidad</option><option>No atiendo esa especie o raza</option><option>Otro motivo</option></select><input id="otro-${r.id}" placeholder="Escribe el motivo" aria-label="Otro motivo" hidden></div></div>
+    <div style="display:flex;gap:8px;flex-direction:column"><button class="prov" data-ok="${r.id}">Aceptar</button><button class="danger" data-no="${r.id}">Rechazar</button></div></div>`).join(''):'<p class="muted">No tienes solicitudes pendientes.</p>'}</div>
+  <div class="card"><h2>Agenda confirmada</h2>${conf.length?conf.map(r=>`<div class="item"><div>${desc(r)}</div><button class="sec" data-fin="${r.id}">Completada</button></div>`).join(''):'<p class="muted">Sin citas confirmadas.</p>'}</div></div>`, 'solicitudes');
+  const cambiar = (id, est, msg, motivo) => { const r=db.reservas.find(x=>x.id===id); r.estado=est; if(motivo) r.motivo=motivo; guardar(); avisar(msg); pintar(); };
+  document.querySelectorAll('[data-ok]').forEach(b=>b.onclick=()=>cambiar(b.dataset.ok,'confirmada','Reserva confirmada'));
+  document.querySelectorAll('[id^="mot-"]').forEach(sl=>sl.onchange=()=>{ const o=$('#otro-'+sl.id.slice(4)); o.hidden = sl.value!=='Otro motivo'; if(!o.hidden) o.focus(); });
+  document.querySelectorAll('[data-no]').forEach(b=>b.onclick=()=>{ const id=b.dataset.no, sl=$('#mot-'+id), o=$('#otro-'+id);
+    if (sl.value==='Otro motivo' && !o.value.trim()) { o.hidden=false; o.focus(); avisar('Escribe el motivo del rechazo.'); return; }
+    cambiar(id,'rechazada','Solicitud rechazada', sl.value==='Otro motivo' ? o.value.trim() : sl.value); });
+  document.querySelectorAll('[data-fin]').forEach(b=>b.onclick=()=>cambiar(b.dataset.fin,'completada','Servicio marcado como completado'));
+}
+
+function vistaServicios(){
+  const u = yo(), lista = db.servicios.filter(s=>s.provId===u.id);
+  const horasSel = (id, v) => `<select id="${id}">${Array.from({length:17},(_,i)=>i+6).map(h=>`<option value="${h}" ${h===v?'selected':''}>${h}:00</option>`).join('')}</select>`;
+  marco(`<h1>Servicios y horarios</h1><p class="sub">Lo que publicas aquí es lo que ven los propietarios al buscar.</p>
+  <div class="card"><h2>Mis servicios</h2>${lista.length?`<table><thead><tr><th>Servicio</th><th>Duración</th><th>Precio</th><th>Estado</th><th></th></tr></thead><tbody>
+    ${lista.map(s=>`<tr><td>${esc(s.nombre)}</td><td>${s.duracion} min</td><td>${pesos(s.precio)}</td><td><span class="badge ${s.activo===false?'completada':'confirmada'}">${s.activo===false?'Inactivo':'Activo'}</span></td>
+    <td><button class="sec" data-tog="${s.id}">${s.activo===false?'Activar':'Desactivar'}</button></td></tr>`).join('')}</tbody></table>`:'<p class="muted">Todavía no publicas servicios.</p>'}</div>
+  <div class="grid"><form class="card" id="fs" novalidate><h2>Publicar servicio</h2>
+    <label for="snom">Nombre del servicio</label><input id="snom" placeholder="Ej.: Baño y corte">
+    <div class="row"><div><label for="sprecio">Precio (COP)</label><input id="sprecio" type="number" min="0" step="1000"></div>
+    <div><label for="sdur">Duración (min)</label><input id="sdur" type="number" min="10" step="5" value="60"></div></div>
+    <div id="error" class="err" role="alert"></div><p><button class="prov">Publicar servicio</button></p></form>
+  <form class="card" id="fh"><h2>Horario de atención</h2><p class="muted">Se ofrecen citas cada hora dentro de este horario.</p>
+    <div class="row"><div><label for="habre">Abre</label>${horasSel('habre',u.abre)}</div><div><label for="hcierra">Cierra</label>${horasSel('hcierra',u.cierra)}</div></div>
+    <div id="errorh" class="err" role="alert"></div><p><button class="sec">Guardar horario</button></p></form></div>`, 'servicios');
+  document.querySelectorAll('[data-tog]').forEach(b=>b.onclick=()=>{ const s=db.servicios.find(x=>x.id===b.dataset.tog); s.activo = s.activo===false; guardar(); pintar(); });
+  $('#fs').onsubmit = (e) => { e.preventDefault();
+    const precio = Number($('#sprecio').value), dur = Number($('#sdur').value);
+    if (!$('#snom').value.trim() || !precio || precio<=0 || !dur) { $('#error').textContent='Completa nombre, precio y duración con valores válidos.'; return; }
+    db.servicios.push({id:nuevoId('s'), provId:u.id, nombre:$('#snom').value.trim(), precio, duracion:dur}); guardar(); avisar('Servicio publicado'); pintar(); };
+  $('#fh').onsubmit = (e) => { e.preventDefault();
+    const a=Number($('#habre').value), c=Number($('#hcierra').value);
+    if (c<=a) { $('#errorh').textContent='La hora de cierre debe ser posterior a la de apertura.'; return; }
+    u.abre=a; u.cierra=c; guardar(); avisar('Horario guardado'); pintar(); };
+}
+
+guardar();
+pintar();
+</script>
+</body>
+</html>

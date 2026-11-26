@@ -1,0 +1,7 @@
+# Archivos que Git no debe versionar
+notas-personales.txt
+*.log
+*.csv
+.vscode/
+Thumbs.db
+desktop.ini

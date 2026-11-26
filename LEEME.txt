@@ -1,0 +1,21 @@
+PetCare - MVP funcional (Análisis y Diseño de Sistemas)
+=======================================================
+
+Cómo abrirlo (no requiere instalación):
+1. Descomprima el archivo PetCare_MVP.zip.
+2. Haga doble clic en index.html. Se abre en el navegador (Chrome, Edge o Firefox).
+3. Ingrese con una cuenta de prueba (contraseña 123456):
+   - Propietaria: laura@petcare.co
+   - Proveedores: jorge@petcare.co (Peluquería, Engativá)
+                  patitas@petcare.co (Peluquería, Kennedy)
+   También puede crear una cuenta nueva con "Regístrate".
+
+Funcionalidad principal: buscar un servicio por tipo y localidad, ver precios
+y horas libres, y solicitar la reserva; el proveedor la acepta o la rechaza
+con motivo y la propietaria ve el estado en "Mis reservas".
+
+Notas:
+- Los datos se guardan en el navegador (localStorage). Para volver a los datos
+  iniciales, use "Restablecer datos de prueba" al pie de la página.
+- Funciona sin internet; con conexión carga las fuentes de la guía de estilos
+  (Bricolage Grotesque y Atkinson Hyperlegible).
